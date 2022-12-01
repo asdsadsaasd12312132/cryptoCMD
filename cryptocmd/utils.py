@@ -57,7 +57,7 @@ def get_coin_id(coin_code):
             print("Error message:", e)
 
 
-def download_coin_data(coin_code, start_date, end_date, fiat, id_number=None):
+def download_coin_data(coin_code, start_date, end_date, fiat, slug=None):
     """
     Download HTML price history for the specified cryptocurrency and time range from CoinMarketCap.
 
@@ -65,7 +65,7 @@ def download_coin_data(coin_code, start_date, end_date, fiat, id_number=None):
     :param start_date: date since when to scrape data (in the format of dd-mm-yyyy)
     :param end_date: date to which scrape the data (in the format of dd-mm-yyyy)
     :param fiat: fiat code eg. USD, EUR
-    :param id_number: id number for the token on coinmarketcap. Will override coin_code.
+    :param slug: slug for the token on coinmarketcap. Will override coin_code.
     :return: returns html of the webpage having historical data of cryptocurrency for certain duration
     """
 
@@ -77,7 +77,7 @@ def download_coin_data(coin_code, start_date, end_date, fiat, id_number=None):
         yesterday = datetime.date.today() - datetime.timedelta(1)
         end_date = yesterday.strftime("%d-%m-%Y")
 
-    if not id_number:
+    if not slug:
         coin_id = get_coin_id(coin_code)
 
     # convert the dates to timestamp for the url
@@ -96,9 +96,9 @@ def download_coin_data(coin_code, start_date, end_date, fiat, id_number=None):
         .timestamp()
     )
 
-    if id_number:
-        api_url = "https://web-api.coinmarketcap.com/v1/cryptocurrency/ohlcv/historical?convert={}&id={}&time_end={}&time_start={}".format(
-            fiat, id_number, end_date_timestamp, start_date_timestamp
+    if slug:
+        api_url = "https://web-api.coinmarketcap.com/v1/cryptocurrency/ohlcv/historical?convert={}&slug={}&time_end={}&time_start={}".format(
+            fiat, slug, end_date_timestamp, start_date_timestamp
         )
     else:
         api_url = "https://web-api.coinmarketcap.com/v1/cryptocurrency/ohlcv/historical?convert={}&slug={}&time_end={}&time_start={}".format(
